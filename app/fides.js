@@ -1,18 +1,40 @@
-window.Fides = (function (window) {
+(function (global) {
+
+    var count = 0, messageQueue = [];
+
+    window.addEventListener("message", function(event) {
+        // We only accept messages from ourselves
+        if (event.source != window)
+            return;
+        if (event.data.target == "fidesboot") {
+            console.log("Fides boot received message: ", event.data);
+            messageQueue[event.data_id].resolve(event.data.message);
+        }
+    });
 
     function emitter (message) {
-        window.postMessage(message, "*");
+        return new Promise ((resolve, reject) => {
+            messageQueue[message._id] = {
+                resolve: resolve,
+                reject: reject
+            };
+            var payload = {
+                _id : ++count,
+                target: "fides",
+                message: message
+            };
+            window.postMessage(payload, "*");
+        });
     };
 
-    return {
-        sign: function () {
+    global.FidesKeystore = {
+        sign: function (data) {
             var payload = {
-                _host: window.location,
+                _host: window.location.host,
                 data: data
             };
-    
-            emitter(payload);
+            return emitter(payload);
         }
     };
-})(window);
-console.log("Fides loaded", Fides);
+}).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
+console.log("Fides loaded", window.FidesKeystore);
