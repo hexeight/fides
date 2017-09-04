@@ -23,6 +23,8 @@ window.addEventListener("message", function(event) {
     
     if (event.data.target == "fides") {
         console.log("Content script received message: ", event.data);
-        responder(event.data._id, { signature: "ABCD" });
+        chrome.storage.local.get("value", function (val) {
+            responder(event.data._id, { signature: val });
+        });
     }
 });
