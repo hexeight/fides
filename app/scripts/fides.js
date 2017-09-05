@@ -12,7 +12,7 @@
         }
     });
 
-    function emitter (message) {
+    function emitter (action, message) {
         return new Promise ((resolve, reject) => {
             messageQueue[message._id] = {
                 resolve: resolve,
@@ -20,6 +20,7 @@
             };
             var payload = {
                 _id : ++count,
+                action: action,
                 target: "fides",
                 message: message
             };
@@ -33,7 +34,7 @@
                 _host: window.location.host,
                 data: data
             };
-            return emitter(payload);
+            return emitter("sign", payload);
         }
     };
 }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
