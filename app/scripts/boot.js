@@ -34,12 +34,13 @@ window.addEventListener("message", function(event) {
                 case "sign":
                     options = {
                         data: JSON.stringify(event.data.message), // input as String (or Uint8Array)
-                        privateKeys: privKeyObj // for signing
+                        privateKeys: privKeyObj, // for signing
+                        detached: true
                     };
                     
                     openpgp.sign(options).then(function(signed) {
-                        cleartext = signed.data; // '-----BEGIN PGP SIGNED MESSAGE ... END PGP SIGNATURE-----'
-                        responder(event.data._id, { data: cleartext });
+                        //cleartext = signed.data; // '-----BEGIN PGP SIGNED MESSAGE ... END PGP SIGNATURE-----'
+                        responder(event.data._id, signed);
                     });
                 break;
 

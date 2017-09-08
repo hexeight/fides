@@ -35,6 +35,17 @@
                 data: data
             };
             return emitter("sign", payload);
+        },
+        verify: function (key, data, signature) {
+            var payload = {
+                _host: window.location.host,
+                data: {
+                    publicKey: key,
+                    data: data,
+                    signature: signature
+                }
+            };
+            return emitter("verify", payload);
         }
     };
 }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
