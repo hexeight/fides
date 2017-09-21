@@ -7,7 +7,7 @@ function setStorage (text) {
 var btn = document.getElementById("save");
 btn.addEventListener("click", function (e) {
   var options = {
-      userIds: [{ name:'Jon Smith', email:'jon@example.com' }], // multiple user IDs
+      userIds: [{ name:'Omkar Khair', email:'omkarkhair@gmail.com' }], // multiple user IDs
       numBits: 4096,                                            // RSA key size
       passphrase: 'super long and hard to guess secret'         // protects the private key
   };
@@ -18,3 +18,12 @@ btn.addEventListener("click", function (e) {
       setStorage(privkey);
   });
 })
+
+chrome.webRequest.onBeforeRequest.addListener(
+  function(details) {
+      console.log("Adding fides headers");
+      details.requestHeaders.push({name:"pgp-sign",value:"123"});
+      return {requestHeaders: details.requestHeaders};
+  },
+{urls: ["<all_urls>"]},
+["blocking"]);

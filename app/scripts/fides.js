@@ -48,5 +48,20 @@
             return emitter("verify", payload);
         }
     };
+
+    global.XMLHttpRequestSigned = function (data) {
+        var http = new XMLHttpRequest();
+        http.sendSigned = function () {
+            // Add signing headers
+
+            if (!data)
+                XMLHttpRequest.send();
+            else
+                XMLHttpRequest.send(data);
+        }
+
+        return http;
+    }
+
 }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
 console.log("Fides loaded", window.FidesKeystore);
