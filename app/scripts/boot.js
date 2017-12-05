@@ -6,9 +6,6 @@ s.onload = function() {
 };
 (document.head || document.documentElement).appendChild(s);
 
-
-
-
 function responder (id, message) {
     var payload = {
         _id: id,

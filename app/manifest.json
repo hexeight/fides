@@ -8,6 +8,7 @@
             "matches": ["<all_urls>"],
             "js": [
                 "scripts/lib/openpgp.js",
+                "scripts/lib/jsencrypt.js",
                 "scripts/boot.js"
             ]
         }],
@@ -16,7 +17,10 @@
         "default_popup": "popup.html"
     },
     "permissions": [
-        "<all_urls>","webRequest","webRequestBlocking",
+        "tabs",
+        "http://*/*",
+        "https://*/*",
+        "chrome://favicon/",
         "activeTab",
         "storage"
     ],

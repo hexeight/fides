@@ -1,24 +1,34 @@
-function setStorage (text) {
-  chrome.storage.local.set({ 'key': text }, function () {
+function setStorage (prv, pub) {
+  chrome.storage.local.set({ 'prv': prv, 'pub': pub }, function () {
     console.log("Stored!");
   });
 }
 
 var btn = document.getElementById("save");
 btn.addEventListener("click", function (e) {
-  var options = {
-      userIds: [{ name:'Omkar Khair', email:'omkarkhair@gmail.com' }], // multiple user IDs
-      numBits: 4096,                                            // RSA key size
-      passphrase: 'super long and hard to guess secret'         // protects the private key
-  };
 
-  openpgp.generateKey(options).then(function(key) {
-      var privkey = key.privateKeyArmored; // '-----BEGIN PGP PRIVATE KEY BLOCK ... '
-      var pubkey = key.publicKeyArmored;   // '-----BEGIN PGP PUBLIC KEY BLOCK ... '
-      setStorage(privkey);
-  });
+  var rsaKeypair = KEYUTIL.generateKeypair("RSA", 1024);
+  var pubKey = KEYUTIL.getPEM(rsaKeypair.pubKeyObj);
+  var prvKey = KEYUTIL.getPEM(rsaKeypair.prvKeyObj, "PKCS8PRV");
+  document.getElementById("genkey").innerHTML = pubKey;
+  setStorage(prvKey, pubKey);
+
 })
 
+
+function init() {
+  var key = chrome.storage.local.get("pub", function (val) {
+    
+    if (val !== undefined) {
+      console.log(val);
+      document.getElementById("genkey").innerHTML = val.pub;
+    }
+  });
+}
+
+init();
+
+/*
 chrome.webRequest.onBeforeRequest.addListener(
   function(details) {
       console.log("Adding fides headers");
@@ -27,3 +37,4 @@ chrome.webRequest.onBeforeRequest.addListener(
   },
 {urls: ["<all_urls>"]},
 ["blocking"]);
+*/
