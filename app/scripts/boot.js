@@ -24,24 +24,22 @@ window.addEventListener("message", function(event) {
     if (event.data.target == "fides") {
         console.log("Content script received message: ", event.data);
 
-        chrome.storage.local.get("key", function (val) {
-            var privKeyObj = openpgp.key.readArmored(val.key).keys[0];
-            var passphrase = 'super long and hard to guess secret';
-            privKeyObj.decrypt(passphrase);
+        chrome.storage.local.get("prv", function (val) {
+
+            if (val === undefined)
+                throw "Certificate not created!";
+
+            var prv = KEYUTIL.getKey(val.prv);
+            
             // Determine action
             switch (event.data.action)
             {
                 case "sign":
-                    options = {
-                        data: JSON.stringify(event.data.message), // input as String (or Uint8Array)
-                        privateKeys: privKeyObj, // for signing
-                        detached: true
-                    };
-                    
-                    openpgp.sign(options).then(function(signed) {
-                        //cleartext = signed.data; // '-----BEGIN PGP SIGNED MESSAGE ... END PGP SIGNATURE-----'
-                        responder(event.data._id, signed);
-                    });
+                    var sig = new KJUR.crypto.Signature({"alg": "SHA1withRSA"});
+                    sig.init(prv);
+                    sig.updateString(JSON.stringify(event.data.message));
+                    var signed = sig.sign();
+                    responder(event.data._id, signed);
                 break;
 
                 default:

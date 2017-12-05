@@ -76,7 +76,7 @@
                 console.log(formString);
                 global.FidesKeystore.sign(formString).then(function (val) {
                     console.log("Sign", val);
-                    ele.value = val.signature;
+                    ele.value = val;
                 });
                 ele.value = "";
             }
