@@ -1,2 +1,2 @@
 # fides
-Fides is an experimental chrome extension that allows users to digitally sign transactions over the web.
+Fides is an experimental chrome extension that allows users to digitally sign transactions over the web. For details checkout a possible use case for cryptographically signed transactions on the web. http://0x8.in/web-crypto/
